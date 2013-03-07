@@ -16,7 +16,7 @@ var myApp = (function () {
         myAudioAnalyser,					//audio analyser
         mySpectrum,                         //audio apectrum graph
         myAudioBuffer,						//audio buffer data
-        mySoundFile = 'sounds/loop.wav',	//sound file
+        mySoundFile = 'loop.wav',	        //sound file
         mySound;							//sound source
 
 	return {
@@ -25,16 +25,16 @@ var myApp = (function () {
 			var doc = document;
 
 			//create an audio context
-            if ('webkitAudioContext' in window) {
-                myAudioContext = new webkitAudioContext();
-            } else if ('AudioContext' in window) {
+            if ('AudioContext' in window) {
                 myAudioContext = new AudioContext();
+            } else if ('webkitAudioContext' in window) {
+                myAudioContext = new webkitAudioContext();
             } else {
                 alert('Your device does not yet support the Web Audio API, sorry!');
                 return;
             }
 
-            myApp.loadSoundFile(mySoundFile);
+            myApp.loadSoundFile('sounds/' + mySoundFile);
 
             //creat master volume gain node
             nodes.volume = myAudioContext.createGainNode();
@@ -65,7 +65,7 @@ var myApp = (function () {
 
         /**
          * Initialise audioBuffers by decoding mp3 audio data
-         * @param arrayBuffer (arrayBuffer), mixerChannel (number)
+         * @param arrayBuffer (arrayBuffer)
          */
         initSound: function (arrayBuffer) {
             myAudioContext.decodeAudioData(arrayBuffer, function (buffer) {
@@ -80,6 +80,9 @@ var myApp = (function () {
 
         initControls: function () {
         	document.getElementById('play').addEventListener('click', myApp.playSound, false);
+            document.getElementById('stop').addEventListener('click', myApp.stopSound, false);
+            document.getElementById('track').innerHTML = 'Track: ' + mySoundFile;
+            document.getElementById('duration').innerHTML = '(' + Math.round(myAudioBuffer.duration * 10) / 10 + 's)';
         },
 
         routeSound: function () {
@@ -103,6 +106,12 @@ var myApp = (function () {
             mySound.noteOn(0);
         },
 
+        stopSound: function () {
+            if (myAudioContext.activeSourceCount > 0) {
+                mySound.noteOff(0);
+            }
+        },
+
         animateSpectrum: function () {
         	mySpectrum = requestAnimationFrame(myApp.animateSpectrum, document.getElementById('output'));
             myApp.drawSpectrum();
@@ -123,7 +132,12 @@ var myApp = (function () {
             canvas.height = height;
 
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+
+            ctx.fillStyle = 'rgba(163, 227, 246, 0.7)';
 
             myAudioAnalyser.getByteFrequencyData(freqByteData);
 
