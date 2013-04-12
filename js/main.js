@@ -25,9 +25,7 @@ var myApp = (function () {
 			var doc = document;
 
 			//create an audio context
-            if ('AudioContext' in window) {
-                myAudioContext = new AudioContext();
-            } else if ('webkitAudioContext' in window) {
+            if ('webkitAudioContext' in window) {
                 myAudioContext = new webkitAudioContext();
             } else {
                 alert('Your device does not yet support the Web Audio API, sorry!');
