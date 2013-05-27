@@ -9,27 +9,27 @@
 
 var myApp = (function () {
 
-	'use strict';
+    'use strict';
 
-	var nodes = {},                         //nodes object
+    var nodes = {},                         //nodes object
         myAudioContext,                     //web audio context
-        myAudioAnalyser,					//audio analyser
+        myAudioAnalyser,                    //audio analyser
         mySpectrum,                         //audio apectrum graph
-        myAudioBuffer,						//audio buffer data
-        mySoundFile = 'loop.wav',	        //sound file
-        mySound;							//sound source
+        myAudioBuffer,                      //audio buffer data
+        mySoundFile = 'loop.wav',           //sound file
+        mySound;                            //sound source
 
-	return {
+    return {
 
-		init: function () {
-			var doc = document;
+        init: function () {
+            var doc = document;
 
-			//create an audio context
-            if ('webkitAudioContext' in window) {
-                myAudioContext = new webkitAudioContext();
-            } else if ('AudioContext' in window) {
+            //create an audio context
+            if ('AudioContext' in window) {
                 myAudioContext = new AudioContext();
-            } else {
+            } else if ('webkitAudioContext' in window) {
+                myAudioContext = new webkitAudioContext();
+            else {
                 alert('Your device does not yet support the Web Audio API, sorry!');
                 return;
             }
@@ -46,9 +46,9 @@ var myApp = (function () {
 
             //animate spectrum analyser
             myApp.animateSpectrum();
-		},
+        },
 
-		/**
+        /**
          * Helper method to request a sound file and call initialise on load
          * @param url (string)
          */
@@ -79,19 +79,19 @@ var myApp = (function () {
         },
 
         initControls: function () {
-        	document.getElementById('play').addEventListener('click', myApp.playSound, false);
+            document.getElementById('play').addEventListener('click', myApp.playSound, false);
             document.getElementById('stop').addEventListener('click', myApp.stopSound, false);
             document.getElementById('track').innerHTML = 'Track: ' + mySoundFile;
             document.getElementById('duration').innerHTML = '(' + Math.round(myAudioBuffer.duration * 10) / 10 + 's)';
         },
 
         routeSound: function () {
-			mySound = myAudioContext.createBufferSource();
+            mySound = myAudioContext.createBufferSource();
             mySound.buffer = myAudioBuffer;
             mySound.loop = true;
-        	mySound.connect(nodes.volume);
+            mySound.connect(nodes.volume);
 
-        	//connect master gain node to audio analyser
+            //connect master gain node to audio analyser
             nodes.volume.connect(myAudioAnalyser);
 
             //connect audio analyser to the speakers
@@ -99,10 +99,10 @@ var myApp = (function () {
         },
 
         playSound: function () {
-        	if (myAudioContext.activeSourceCount > 0) {
+            if (myAudioContext.activeSourceCount > 0) {
                 mySound.noteOff(0);
             }
-			myApp.routeSound();
+            myApp.routeSound();
             mySound.noteOn(0);
         },
 
@@ -111,12 +111,12 @@ var myApp = (function () {
         },
 
         animateSpectrum: function () {
-        	mySpectrum = requestAnimationFrame(myApp.animateSpectrum, document.getElementById('output'));
+            mySpectrum = requestAnimationFrame(myApp.animateSpectrum, document.getElementById('output'));
             myApp.drawSpectrum();
         },
 
         drawSpectrum: function () {
-        	var canvas = document.querySelector('canvas'),
+            var canvas = document.querySelector('canvas'),
                 ctx = canvas.getContext('2d'),
                 width = 300,
                 height = 300,
@@ -145,7 +145,7 @@ var myApp = (function () {
                 ctx.fillRect(bar_width * i, height, bar_width - 1, -magnitude * 1.15);
             }
         }
-	};
+    };
 }());
 
 window.addEventListener("DOMContentLoaded", myApp.init, true);
