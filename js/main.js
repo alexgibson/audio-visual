@@ -27,6 +27,8 @@ var myApp = (function () {
 			//create an audio context
             if ('webkitAudioContext' in window) {
                 myAudioContext = new webkitAudioContext();
+            } else if ('AudioContext' in window) {
+                myAudioContext = new AudioContext();
             } else {
                 alert('Your device does not yet support the Web Audio API, sorry!');
                 return;
@@ -105,9 +107,7 @@ var myApp = (function () {
         },
 
         stopSound: function () {
-            if (myAudioContext.activeSourceCount > 0) {
-                mySound.noteOff(0);
-            }
+            mySound.noteOff(0);
         },
 
         animateSpectrum: function () {
