@@ -17,7 +17,8 @@ var myApp = (function () {
         mySpectrum,                         //audio apectrum graph
         myAudioBuffer,                      //audio buffer data
         mySoundFile = 'loop.wav',           //sound file
-        mySound;                            //sound source
+        mySound,                            //sound source
+        isPlaying = false;
 
     return {
 
@@ -99,15 +100,19 @@ var myApp = (function () {
         },
 
         playSound: function () {
-            if (myAudioContext.activeSourceCount > 0) {
+            if (isPlaying) {
                 mySound.noteOff(0);
             }
             myApp.routeSound();
             mySound.noteOn(0);
+            isPlaying = true;
         },
 
         stopSound: function () {
-            mySound.noteOff(0);
+            if (isPlaying) {
+                mySound.noteOff(0);
+                isPlaying = false;                
+            }
         },
 
         animateSpectrum: function () {
