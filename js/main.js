@@ -111,7 +111,7 @@ var myApp = (function () {
         stopSound: function () {
             if (isPlaying) {
                 mySound.noteOff(0);
-                isPlaying = false;                
+                isPlaying = false;
             }
         },
 
